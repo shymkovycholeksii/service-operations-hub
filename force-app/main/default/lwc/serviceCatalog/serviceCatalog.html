@@ -1,0 +1,55 @@
+<template>
+    <lightning-card title="Service Catalog" icon-name="standard:service_appointment">
+        <div class="slds-p-around_medium" aria-live="polite">
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Loading services" size="small"></lightning-spinner>
+            </template>
+            <template lwc:elseif={showError}>
+                <div class="slds-text-color_error" role="alert">
+                    <lightning-formatted-text value={errorMessage}></lightning-formatted-text>
+                </div>
+            </template>
+            <template lwc:elseif={hasServices}>
+                <div class="service-grid">
+                    <template for:each={services} for:item="service">
+                        <article key={service.id} class="service-item slds-box">
+                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                <lightning-button
+                                    label={service.name}
+                                    variant="base"
+                                    title={service.name}
+                                    data-record-id={service.id}
+                                    onclick={handleNavigate}
+                                ></lightning-button>
+                                <lightning-badge label={service.status}></lightning-badge>
+                            </div>
+                            <template lwc:if={service.hasCategory}>
+                                <p class="slds-m-top_small">
+                                    <span class="slds-text-title_bold">Category:</span>
+                                    {service.category}
+                                </p>
+                            </template>
+                            <template lwc:if={service.hasDescription}>
+                                <div class="slds-m-top_small service-description">
+                                    <lightning-formatted-text
+                                        value={service.description}
+                                    ></lightning-formatted-text>
+                                </div>
+                            </template>
+                            <div class="slds-m-top_medium">
+                                <lightning-button
+                                    label="Create Request"
+                                    data-record-id={service.id}
+                                    onclick={handleCreateRequest}
+                                ></lightning-button>
+                            </div>
+                        </article>
+                    </template>
+                </div>
+            </template>
+            <template lwc:else>
+                <p class="slds-text-color_weak">No active services are available.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

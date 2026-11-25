@@ -1,0 +1,19 @@
+:host {
+    display: block;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 1rem;
+}
+
+.service-item {
+    min-width: 0;
+    background: var(--slds-g-color-neutral-base-100, #ffffff);
+}
+
+.service-description {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
