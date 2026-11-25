@@ -24,8 +24,9 @@ Deployed the Case Management Workspace — a Lightning Web Component that lets s
 | `lwc/caseManagementWorkspace/caseManagementWorkspace.css` | LWC Styles | ✅ Deployed (pre-existing) |
 | `lwc/caseManagementWorkspace/caseManagementWorkspace.js-meta.xml` | LWC Metadata | ✅ Deployed (pre-existing) |
 | `flexipages/SOH_Case_Workspace.flexipage-meta.xml` | FlexiPage (AppPage) | ✅ Deployed this session |
-| `tabs/SOH_Case_Workspace.tab-meta.xml` | Custom Tab | ✅ Deployed this session |
-| `applications/standard__ServiceConsole.app-meta.xml` | App metadata (source of truth) | Committed; nav applied via App Builder |
+| `tabs/SOH_Case_Workspace.tab-meta.xml` | Custom Tab | ✅ Deployed (`01rgL000029afxyQAA`) |
+| `permissionsets/SOH_Case_Workspace_Access.permissionset-meta.xml` | Permission Set | ✅ Deployed (`0PSgL00000Q5yEHWAZ`) & assigned |
+| `applications/standard__ServiceConsole.app-meta.xml` | App metadata (source of truth) | Committed; Lightning nav applied in `standard__LightningService` |
 
 ---
 
@@ -51,10 +52,14 @@ Deployed the Case Management Workspace — a Lightning Web Component that lets s
 - Changed to `flexipage:appHomeTemplateThreeColumns` (matching the existing `Service_Catalog` FlexiPage pattern already deployed in this org).
 - Component placed in `region2` (main content region).
 
-### 5. Access Verification
+### 5. Access & Tab Visibility Verification
 - System Administrator profile: full CRUD on Case standard fields (Status, Priority, Subject, Description, CaseNumber, AccountId, ContactId, OwnerId).
 - `SOH_SLA_Field_Access` permission set (already assigned): Read+Edit on `Resolution_Notes__c`, `Resolution_Deadline__c`, `Response_Deadline__c`, `SLA_Status__c`, `Service__c`.
-- **No new permission set required.** All fields are covered by existing access.
+- `SOH_Case_Workspace_Access` permission set (created & deployed `0AfgL00000fRUFLSA4`): grants `Visible` (`DefaultOn`) tab visibility for `SOH_Case_Workspace` only (no extra object/field/system permissions).
+- Assigned to `ucharal.35f352789bd6@agentforce.com` (`PermissionSetAssignment: 0PagL00000tmTGGSA2`).
+- Confirmed via SOQL:
+  - `PermissionSetTabSetting`: `SOH_Case_Workspace` → `DefaultOn` (`01PgL0000dTOMQvUAP`)
+  - `TabDefinition`: `SOH_Case_Workspace` (`Label: SOH Case Workspace`, `SobjectName: 0M0gL00000Am6N7`) now exposed.
 
 ---
 
@@ -62,14 +67,9 @@ Deployed the Case Management Workspace — a Lightning Web Component that lets s
 
 The app navigation update requires manual verification. Complete the following:
 
-### Step 1 — Confirm tab appears in Service Console
-1. Open: `https://orgfarm-e958f5f827-dev-ed.develop.my.salesforce.com/lightning/app/standard__ServiceConsole`
-2. Verify **SOH Case Workspace** tab is visible in the navigation bar.
-   - If the tab is missing, it may need to be added via App Manager:
-     1. Go to `Setup → Apps → App Manager`
-     2. Find **Service Console** → click dropdown → **Edit**
-     3. In **Navigation Items**, move **SOH Case Workspace** to Selected Items
-     4. Save.
+### Step 1 — Confirm tab appears in Lightning Service Console
+1. Open Lightning Service Console (`standard__LightningService`): `https://orgfarm-e958f5f827-dev-ed.develop.my.salesforce.com/lightning/app/standard__LightningService`
+2. Verify **SOH Case Workspace** tab is visible in the navigation bar / menu (tab visibility and `TabDefinition` are now confirmed).
 
 ### Step 2 — Functional verification checklist
 
