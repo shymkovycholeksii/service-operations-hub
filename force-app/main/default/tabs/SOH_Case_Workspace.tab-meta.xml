@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Service Operations Hub Case Management Workspace.</description>
+    <flexiPage>SOH_Case_Workspace</flexiPage>
+    <label>SOH Case Workspace</label>
+    <motif>Custom20: Bookmark</motif>
+</CustomTab>

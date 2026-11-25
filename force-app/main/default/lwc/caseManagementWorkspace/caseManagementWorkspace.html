@@ -1,0 +1,171 @@
+<template>
+    <div class="workspace slds-p-around_medium">
+        <section class="case-list">
+            <lightning-card title="Cases" icon-name="standard:case">
+                <div class="slds-p-around_medium">
+                    <div class="filters">
+                        <lightning-combobox
+                            label="Status"
+                            value={statusFilter}
+                            options={statusOptions}
+                            onchange={handleStatusFilterChange}
+                        ></lightning-combobox>
+                        <lightning-combobox
+                            label="Priority"
+                            value={priorityFilter}
+                            options={priorityOptions}
+                            onchange={handlePriorityFilterChange}
+                        ></lightning-combobox>
+                        <lightning-combobox
+                            label="SLA Status"
+                            value={slaStatusFilter}
+                            options={slaStatusOptions}
+                            onchange={handleSlaStatusFilterChange}
+                        ></lightning-combobox>
+                    </div>
+
+                    <template lwc:if={metadataErrorMessage}>
+                        <div class="slds-text-color_error slds-m-top_small" role="alert">
+                            <lightning-formatted-text
+                                value={metadataErrorMessage}
+                            ></lightning-formatted-text>
+                        </div>
+                    </template>
+
+                    <template lwc:if={isLoading}>
+                        <lightning-spinner
+                            alternative-text="Loading Cases"
+                            size="small"
+                        ></lightning-spinner>
+                    </template>
+                    <template lwc:elseif={queryErrorMessage}>
+                        <div class="slds-text-color_error slds-m-top_medium" role="alert">
+                            <lightning-formatted-text
+                                value={queryErrorMessage}
+                            ></lightning-formatted-text>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <template lwc:if={hasCases}>
+                            <div class="table-container slds-m-top_medium">
+                                <lightning-datatable
+                                    key-field="id"
+                                    data={filteredCases}
+                                    columns={columns}
+                                    max-row-selection="1"
+                                    selected-rows={selectedRows}
+                                    onrowselection={handleRowSelection}
+                                ></lightning-datatable>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="empty-state slds-p-around_large slds-text-align_center">
+                                <p class="slds-text-heading_small">No Cases match these filters</p>
+                                <p class="slds-text-color_weak slds-m-top_x-small">
+                                    Clear one or more filters to see additional Cases.
+                                </p>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+            </lightning-card>
+        </section>
+
+        <section class="case-details">
+            <lightning-card title={detailTitle} icon-name="standard:case">
+                <template lwc:if={selectedCaseId}>
+                    <div class="slds-p-around_medium">
+                        <lightning-record-view-form
+                            record-id={selectedCaseId}
+                            object-api-name={caseObject}
+                        >
+                            <lightning-output-field
+                                field-name={subjectField}
+                            ></lightning-output-field>
+                            <lightning-output-field
+                                field-name={descriptionField}
+                            ></lightning-output-field>
+                            <lightning-output-field
+                                field-name={statusField}
+                            ></lightning-output-field>
+                            <lightning-output-field
+                                field-name={priorityField}
+                            ></lightning-output-field>
+                            <lightning-output-field
+                                field-name={serviceField}
+                            ></lightning-output-field>
+                            <lightning-output-field
+                                field-name={responseDeadlineField}
+                            ></lightning-output-field>
+                            <lightning-output-field
+                                field-name={resolutionDeadlineField}
+                            ></lightning-output-field>
+                            <lightning-output-field
+                                field-name={slaStatusField}
+                            ></lightning-output-field>
+                            <lightning-output-field
+                                field-name={resolutionNotesField}
+                            ></lightning-output-field>
+                        </lightning-record-view-form>
+
+                        <template lwc:if={refreshErrorMessage}>
+                            <div class="slds-text-color_error slds-m-bottom_small" role="alert">
+                                <lightning-formatted-text
+                                    value={refreshErrorMessage}
+                                ></lightning-formatted-text>
+                            </div>
+                        </template>
+                        <template lwc:if={saveErrorMessage}>
+                            <div class="slds-text-color_error slds-m-bottom_small" role="alert">
+                                <lightning-formatted-text
+                                    value={saveErrorMessage}
+                                ></lightning-formatted-text>
+                            </div>
+                        </template>
+
+                        <lightning-record-edit-form
+                            record-id={selectedCaseId}
+                            object-api-name={caseObject}
+                            onsuccess={handleSaveSuccess}
+                            onerror={handleSaveError}
+                        >
+                            <lightning-messages></lightning-messages>
+                            <lightning-input-field
+                                field-name={statusField}
+                            ></lightning-input-field>
+                            <lightning-input-field
+                                field-name={priorityField}
+                            ></lightning-input-field>
+                            <lightning-input-field
+                                field-name={resolutionNotesField}
+                            ></lightning-input-field>
+                            <div class="slds-m-top_medium slds-grid slds-wrap slds-gutters_small">
+                                <div class="slds-col">
+                                    <lightning-button
+                                        type="submit"
+                                        variant="brand"
+                                        label="Save Changes"
+                                    ></lightning-button>
+                                </div>
+                                <div class="slds-col">
+                                    <lightning-button
+                                        label="Open Case Record"
+                                        onclick={handleOpenCase}
+                                    ></lightning-button>
+                                </div>
+                            </div>
+                        </lightning-record-edit-form>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="empty-state slds-p-around_large slds-text-align_center">
+                        <p class="slds-text-heading_small">Select a Case to view its details</p>
+                        <p class="slds-text-color_weak slds-m-top_x-small">
+                            Choose a row in the Cases list to inspect and update it.
+                        </p>
+                    </div>
+                </template>
+            </lightning-card>
+        </section>
+    </div>
+</template>
